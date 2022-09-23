@@ -9,7 +9,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-    - uses: yasassri/setup-wso2-apictl@v0.9.3
+    - uses: yasassri/setup-wso2-apictl@v0.9.4
       with:
         url: 'localhost'
     - run: apictl version
