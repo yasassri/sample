@@ -8,7 +8,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-    - uses: yasassri/setup-wso2-apictl@v1.1
+    - uses: yasassri/setup-wso2-apictl@main
       with:
         version: 'v4.1.0'
     - run: apictl version
