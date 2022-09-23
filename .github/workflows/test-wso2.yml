@@ -12,4 +12,5 @@ jobs:
     - uses: yasassri/setup-wso2-apictl@v0.9.9.3
       with:
         version: 'v3.2.5'
+        tar_location: 'https://github.com/wso2/product-apim-tooling/releases/download/v4.1.0/apictl-4.1.0-linux-x64.tar.gz'
     - run: apictl version
