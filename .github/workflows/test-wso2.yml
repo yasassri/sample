@@ -1,0 +1,14 @@
+name: Greetings
+
+on: [pull_request_target, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: yasassri/setup-wso2-apictl@v1.1
+      with:
+        url: 'localhost'
