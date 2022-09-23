@@ -11,5 +11,5 @@ jobs:
     steps:
     - uses: yasassri/setup-wso2-apictl@v0.9.9.3
       with:
-        version: '3.2.5'
+        version: 'v3.2.5'
     - run: apictl version
