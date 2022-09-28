@@ -1,5 +1,5 @@
 node { 
-    String agent = new File(pwd() + '/agents').text
+    String agent = new File( pwd() + '/agents').text
     println agent
 }
     
