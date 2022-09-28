@@ -19,7 +19,9 @@ pipeline {
 
 def getAgentFromFile(){
     def agent1 = "default"
-    agent1 = new File( pwd() + '/agents').text.trim()
-    println agent1
+    node {
+        agent1 = new File( pwd() + '/agents').text.trim()
+        println agent1
+    } 
     return agent1
 }
