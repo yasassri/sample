@@ -1,4 +1,6 @@
 def call() {
+    String agent = new File('agents').text
+    println agent
     pipeline {
         agent any
         stages {
