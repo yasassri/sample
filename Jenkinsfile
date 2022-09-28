@@ -1,11 +1,11 @@
-def agent1 = "any"
-node { 
-    agent1 = new File( pwd() + '/agents').text.trim()
-    println agent1
-}
+
+// node { 
+//     agent1 = new File( pwd() + '/agents').text.trim()
+//     println agent1
+// }
     
 pipeline {
-    agent agent1
+    agent {label getAgentFromFile()}
     stages {
         stage('Hello6') {
             steps {
@@ -15,4 +15,11 @@ pipeline {
             }
         }
    }
+}
+
+def getAgentFromFile(){
+    def agent1 = "default"
+    agent1 = new File( pwd() + '/agents').text.trim()
+    println agent1
+    return agent1
 }
