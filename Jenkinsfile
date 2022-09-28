@@ -1,5 +1,6 @@
+def agent1 = any
 node { 
-    String agent = new File( pwd() + '/agents').text
+    agent1 = new File( pwd() + '/agents').text.trim()
     println agent
 }
     
@@ -9,7 +10,7 @@ pipeline {
         stage('Hello6') {
             steps {
                 script {
-                  echo "Hello Something $agent"                 
+                  echo "Hello Something $agent1"                 
                 }
             }
         }
