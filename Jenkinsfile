@@ -1,4 +1,4 @@
-def agent1 = any
+def agent1 = "any"
 node { 
     agent1 = new File( pwd() + '/agents').text.trim()
     println agent
