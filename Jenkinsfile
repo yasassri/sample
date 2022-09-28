@@ -1,12 +1,14 @@
-pipeline {
-    agent any
-    stages {
-        stage('Hello6') {
-            steps {
-                script {
-                  echo "Hello Something"                 
+def call() {
+    pipeline {
+        agent any
+        stages {
+            stage('Hello6') {
+                steps {
+                    script {
+                      echo "Hello Something"                 
+                    }
                 }
             }
-        }
-   }
+       }
+    }
 }
