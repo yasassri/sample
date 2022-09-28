@@ -7,7 +7,7 @@ def call() {
             stage('Hello6') {
                 steps {
                     script {
-                      echo "Hello Something"                 
+                      echo "Hello Something $agent"                 
                     }
                 }
             }
