@@ -1,14 +1,40 @@
-name: WSO2_APIM
-on: [push, pull_request_target, issues]
+name: Build and test
 
 jobs:
-  wso2:
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      pull-requests: write
+  build-and-test:
+    strategy:
+      matrix:
+        config:
+          - name: 'Ubuntu 18.04'
+            runner: 'ubuntu-18.04'
+            id: 'u18'
+
+          - name: 'Ubuntu 20.04'
+            runner: 'ubuntu-20.04'
+            id: 'u20'
+
+      fail-fast: false
+
+    runs-on: ${{ matrix.config.runner }}
+
     steps:
-    - uses: yasassri/setup-wso2-apictl@main
-      with:
-        version: 'v4.1.0'
-    - run: apictl version
+      - name: Step 1
+        id: step1
+        run: |
+          echo "To be filled in"
+
+      - name: Step 2
+        id: step2
+        run: |
+          echo "To be filled in"
+
+  webhook-update:
+    needs: build-and-test
+    if: always()
+    runs-on: [ubuntu-20.04]
+    steps:
+      - name: Send webhook update for all jobs
+        run: |
+          # In the future will push to slash, but for now using echo
+          echo ${{ needs.build-and-test.results }}
+          # Ideally I want to also have access to something like u18.results and u20.results
