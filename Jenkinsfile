@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    triggers {
-        RemoteBuildTrigger('123456789')
-    }
     stages {
         stage('Hello6') {
             steps {
