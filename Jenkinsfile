@@ -1,7 +1,7 @@
 pipeline {
     agent any
     triggers {
-        remoteeBuild('123456789')
+        remote-build('123456789')
     }
     stages {
         stage('Hello6') {
