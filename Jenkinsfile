@@ -1,27 +1,21 @@
-
-// node { 
-//     agent1 = new File( pwd() + '/agents').text.trim()
-//     println agent1
-// }
+if("$BRANCH_NAME".contains("main")){
+    properties([
+    parameters([
+    string(name: 'SomethingElse', defaultValue: 'Option', description: 'Cloud Type')
+    ])
+])
+} else {
+    println "If not set something different"
+}
     
+
 pipeline {
-    agent {label getAgentFromFile()}
-    stages {
-        stage('Hello6') {
-            steps {
-                script {
-                  echo "Hello Something $agent1"                 
-                }
+    agent any
+    stages{
+        stage("Hello"){
+            steps{
+                echo "Building Something"
             }
         }
-   }
-}
-
-def getAgentFromFile(){
-    def agent1 = "default"
-    node {
-        agent1 = new File( pwd() + '/agents').text.trim()
-        println agent1
-    } 
-    return agent1
+    }
 }
