@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.0/chartjs-plugin-zoom.min.js" integrity="sha512-B6F98QATBNaDHSE7uANGo5h0mU6fhKCUD+SPAY7KZDxE8QgZw9rewDtNiu3mbbutYDWOKT3SPYD8qDBpG2QnEg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<body>
+    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+
+    <button id="initChart">chart with reduce plugin</button> <button id="initNormalChart">normal chart</button>
+<p>Try to zoom and pan the chart</p>
+<canvas id="canvas" style="cursor: grab"></canvas>
+
+    <script>
+
+    const dates = [];
+    const numbers = [];
+    const numbers2 = [];
+    
+    let ini = 1678150956060;
+    for (let i = 0; i < 100; i++) {
+        // const date = new Date();
+        // date.setDate(date.getDate() + i)
+        ini += 100
+        dates.push(ini)
+        numbers.push(Math.random()*10)
+        numbers2.push(Math.random()*10)
+    }
+
+        var speedCanvas = document.getElementById("myChart");
+
+        var chartColors = {
+            red: 'rgb(255, 99, 132)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
+            green: 'rgb(75, 192, 192)',
+            blue: 'rgb(54, 162, 235)',
+            purple: 'rgb(153, 102, 255)',
+            grey: 'rgb(201, 203, 207)'
+        };
+
+        var dataFirst = {
+            label: "Car A - Speed (mph)",
+            data: numbers,
+            lineTension: 0,
+            fill: false,
+            borderColor: 'red'
+        };
+
+        var dataSecond = {
+            label: "Car B - Speed (mph)",
+            data: numbers2,
+            lineTension: 0,
+            fill: true,
+            borderColor: 'blue'
+        };
+
+        var speedData = {
+            labels: dates,
+            datasets: [dataFirst, dataSecond]
+        };
+
+        var chartOptions = {
+            plugins: {
+      zoom: {
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true
+          },
+          mode: 'xy',
+        }
+      }
+    },
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    boxWidth: 80,
+                    fontColor: 'black'
+                },
+                scales: {
+                    x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    }
+                    },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                    display: true,
+                    text: 'Time in Seconds'
+                    }
+                }
+                }
+            }
+        };
+
+        var lineChart = new Chart(speedCanvas, {
+            type: 'line',
+            data: speedData,
+            options: chartOptions
+        });
+
+        var pointsPerDataset = 2000;
+var maxRenderedPointsX = 800;
+var chart = null;
+var rnd = rnd();
+var config = {
+  type: 'line',
+  data: {
+    datasets: [{
+      label: 'Dataset A',
+      backgroundColor: 'rgba(77, 201, 246, 0.1)',
+      borderColor: 'rgb(77, 201, 246)',
+      data: rnd.timePoints(pointsPerDataset, 70, 100),
+      pointRadius: 0
+    }, {
+      label: 'Dataset B',
+      backgroundColor: 'rgba(246, 112, 25, 0.1)',
+      borderColor: 'rgb(246, 112, 25)',
+      data: rnd.timePoints(pointsPerDataset, 20, 70),
+      pointRadius: 0
+    }, {
+      label: 'Dataset C',
+      backgroundColor: 'rgba(106, 112, 25, 0.1)',
+      borderColor: 'rgb(106, 112, 25)',
+      data: rnd.timePoints(pointsPerDataset, 0, 15),
+      pointRadius: 0
+    }]
+  },
+  options: {
+    tooltips: {
+      mode: 'index',
+      intersect: false,
+    },
+    scales: {
+      xAxes: [{
+        type: 'time',
+        display: true,
+        scaleLabel: {
+          display: true,
+          labelString: 'Time'
+        },
+        time: {
+        	min: Date.now() - 10 * 24 * 60 * 60 * 1000,
+          max: Date.now()
+        }
+      }]
+    },
+    pan: {
+      enabled: true,
+      mode: 'x',
+      rangeMin: {
+        x: null
+      },
+      rangeMax: {
+        x: null
+      }
+    },
+    zoom: {
+      enabled: true,
+      mode: 'x'
+    }
+  }
+};
+
+document.getElementById("initChart").addEventListener("click", function() {
+  initChart(true);
+});
+
+document.getElementById("initNormalChart").addEventListener("click", function() {
+  initChart(false);
+});
+
+function initChart(withPlugin) {
+  if (withPlugin) {
+    config.plugins = [{
+      beforeUpdate: function(chart, options) {
+        filterData(chart);
+      }
+    }];
+  } else {
+    delete config.plugins;
+    if (chart && chart.data.origDatasetsData) { // restore original datapoints
+      for (var i in chart.data.origDatasetsData)
+        config.data.datasets[i].data = chart.data.origDatasetsData[i];
+    }
+  }
+  if (chart)
+    chart.destroy();
+  var ctx = document.getElementById('canvas').getContext('2d');
+  chart = new Chart.Line(ctx, config);
+}
+
+function rnd() {
+  return { // taken and modified from charts samples: utils.js
+    _seed: Date.now(),
+
+    num: function(min, max) {
+      this._seed = (this._seed * 9301 + 49297) % 233280;
+      return min + (this._seed / 233280) * (max - min);
+    },
+
+    numbers: function(count, min, max) {
+      var data = [];
+      var value;
+      for (var i = 0; i < count; ++i)
+        data.push(Math.round(this.num(min, max)));
+      return data;
+    },
+
+    timePoints: function(count, min, max) {
+      var y = this.numbers(count, min, max);
+      var points = [];
+      var date = Date.now();
+      var xStep = 60 * 60 * 1000;
+      for (var i = y.length - 1; i >= 0; i--) {
+        points.push({
+          x: date -= xStep,
+          y: y[i]
+        });
+      }
+      return points;
+    }
+  };
+}
+
+function filterData(chart) {
+  var datasets = chart.data.datasets;
+  if (!chart.data.origDatasetsData) {
+    chart.data.origDatasetsData = [];
+    for (var i in datasets) {
+      chart.data.origDatasetsData.push(datasets[i].data);
+    }
+  }
+  var originalDatasetsData = chart.data.origDatasetsData;
+  var chartOptions = chart.options.scales.xAxes[0];
+  var startX = chartOptions.time.min;
+  var endX = chartOptions.time.max;
+
+  if (startX && typeof startX === 'object')
+    startX = startX._d.getTime();
+  if (endX && typeof endX === 'object')
+    endX = endX._d.getTime();
+
+  for (var i = 0; i < originalDatasetsData.length; i++) {
+    var originalData = originalDatasetsData[i];
+
+    if (!originalData.length)
+      continue;
+
+    var firstElement = {
+      index: 0,
+      time: null
+    };
+    var lastElement = {
+      index: originalData.length - 1,
+      time: null
+    };
+
+    for (var j = 0; j < originalData.length; j++) {
+      var time = originalData[j].x;
+      if (time >= startX && (firstElement.time === null || time < firstElement.time)) {
+        firstElement.index = j;
+        firstElement.time = time;
+      }
+      if (time <= endX && (lastElement.time === null || time > lastElement.time)) {
+        lastElement.index = j;
+        lastElement.time = time;
+      }
+    }
+    var startIndex = firstElement.index <= lastElement.index ? firstElement.index : lastElement.index;
+    var endIndex = firstElement.index >= lastElement.index ? firstElement.index : lastElement.index;
+    datasets[i].data = reduce(originalData.slice(startIndex, endIndex + 1), maxRenderedPointsX);
+  }
+}
+
+// returns a reduced version of the data array, averaging x and y values
+function reduce(data, maxCount) {
+  if (data.length <= maxCount)
+    return data;
+  var blockSize = data.length / maxCount;
+  var reduced = [];
+  for (var i = 0; i < data.length;) {
+    var chunk = data.slice(i, (i += blockSize) + 1);
+    reduced.push(average(chunk));
+  }
+  return reduced;
+}
+
+function average(chunk) {
+  var x = 0;
+  var y = 0;
+  for (var i = 0; i < chunk.length; i++) {
+    x += chunk[i].x;
+    y += chunk[i].y;
+  }
+  return {
+    x: Math.round(x / chunk.length),
+    y: y / chunk.length
+  };
+}
+
+    </script>
+
+</body>
+
+</html>
